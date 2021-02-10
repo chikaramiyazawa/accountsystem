@@ -2,31 +2,28 @@ package controllers.account;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controllers.validators.AccountValidator;
 import models.Account;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class AccountCreateServlet
+ * Servlet implementation class AccountPaymentServlet
  */
-@WebServlet("/account/create")
-public class AccountCreateServlet extends HttpServlet {
+@WebServlet("/account/payment")
+public class AccountPaymentServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AccountCreateServlet() {
+    public AccountPaymentServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,38 +37,32 @@ public class AccountCreateServlet extends HttpServlet {
         if(_token != null && _token.equals(request.getSession().getId())){
             EntityManager em = DBUtil.createEntityManager();
 
-            Account a = new Account();
+            Account a = em.find(Account.class, (Integer)(request.getSession().getAttribute("id")));
 
             a.setNumbers(request.getParameter("numbers"));
             a.setPassword(request.getParameter("password"));
+
             a.setAdmin_flag(Integer.parseInt(request.getParameter("admin_flag")));
-            a.setPayment(0);
+            a.setPayment(1);
 
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
             a.setCreated_at(currentTime);
             a.setUpdated_at(currentTime);
 
 
-            List<String> errors = AccountValidator.validate(a, true, true);
-            if(errors.size() >0){
-                em.close();
 
                 request.setAttribute("_token", request.getSession().getId());
                 request.setAttribute("accounts", a);
-                request.setAttribute("errors", errors);
 
-                RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/accounts/new.jsp");
-                rd.forward(request,response);
-            }else{
+
+
                 em.getTransaction().begin();
-                em.persist(a);
                 em.getTransaction().commit();
-                request.getSession().setAttribute("flush", "登録が完了しました。");
+                request.getSession().setAttribute("login_accounts", a);
                 em.close();
 
-                response.sendRedirect(request.getContextPath() + "/account/index");
+                response.sendRedirect(request.getContextPath() + "/credit/new");
             }
-        }
-    }
 
+        }
 }

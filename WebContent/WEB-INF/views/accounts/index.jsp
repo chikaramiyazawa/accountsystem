@@ -15,13 +15,29 @@
             <tbody>
                 <tr>
                     <th>口座番号</th>
+                    <th>入金状況</th>
                     <th>操作</th>
+
                 </tr>
                 <c:forEach var="accounts" items="${accounts}" varStatus="status">
                     <tr class="row${status.count % 2}">
                         <td><c:out value="${accounts.numbers}" /></td>
-                        <td><a
-                            href="<c:url value='/accounts/show?id=${accounts.id}' />">詳細を表示</a></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${accounts.payment == 1}">入金済み</c:when>
+                                    <c:otherwise>未入金</c:otherwise>
+                                </c:choose>
+                            </td>
+
+                        <td>
+                            <c:choose>
+                                <c:when test="${accounts.payment == 1}">×</c:when>
+                                <c:otherwise>
+                                <a href="<c:url value='/account/edit?id=${accounts.id}' />">この口座に入金する。</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+
                     </tr>
                 </c:forEach>
             </tbody>
@@ -44,10 +60,9 @@
 
 
             <p>
-                <a href="<c:url value='/accounts/new'/>">口座開設</a>
+               <a href= "<c:url value='/account/new' />">口座開設 </a>
             <p>
-                <a href="<c:url value='/toppage' />">トップページに戻る</a>
-            </p>
+
 
         </div>
 

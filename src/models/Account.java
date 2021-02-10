@@ -26,8 +26,14 @@ import javax.persistence.Table;
             ),
     @NamedQuery(
             name = "checkNumberAndPassword",
-            query = "SELECT a FROM Account AS a WHERE  a.numbers = :numbers AND a.password = :password"
+            query = "SELECT a FROM Account AS a WHERE  a.numbers = :numbers AND a.password = :password AND a.payment = 1"
             ),
+    @NamedQuery(
+            name = "AccountPayment",
+            query = "SELECT a FROM Account AS a WHERE a.numbers = :numbers AND a.payment = 0"
+            ),
+
+
 
 })
 @Entity
@@ -43,11 +49,8 @@ public class Account {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "remainder")
-    private Integer remainder;
-
-    @Column(name = "cash")
-    private Integer cash;
+    @Column(name = "payment")
+    private Integer payment;
 
     @Column(name = "admin_flag")
     private Integer admin_flag;
@@ -82,20 +85,12 @@ public class Account {
         return password;
     }
 
-    public Integer getRemainder() {
-        return remainder;
+    public Integer getPayment() {
+        return payment;
     }
 
-    public void setRemainder(Integer remainder) {
-        this.remainder = remainder;
-    }
-
-    public Integer getCash() {
-        return cash;
-    }
-
-    public void setCash(Integer cash) {
-        this.cash = cash;
+    public void setPayment(Integer payment) {
+        this.payment = payment;
     }
 
     public Integer getAdmin_flag() {

@@ -13,7 +13,7 @@
     <div id="wrapper">
         <div id="header">
             <div id="header_menu">
-                <h1>ＡＴＭ</h1>
+                <h1>Java銀行</h1>
 
 
 
