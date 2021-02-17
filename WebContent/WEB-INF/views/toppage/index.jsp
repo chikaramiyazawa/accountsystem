@@ -19,7 +19,12 @@
 
                     <th><a href="<c:url value='/login/deposit' />">お預入れ</a></th>
                     <th><a href="<c:url value='/login/drawer'/>">お引き出し</a></th>
+
+                </tr>
+            <tbody>
+                <tr>
                     <th><a href="<c:url value='/login/reference'/>">残高照会</a></th>
+                     <th><a href="<c:url value='/login/entry'/>">通帳記入</a></th>
                 </tr>
 
 

@@ -1,6 +1,7 @@
 package controllers.credit;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -55,9 +56,14 @@ public class CreditCreateServlet extends HttpServlet {
 
             }
             c.setCash(0);
+            c.setDeposit(remainder);
+            c.setDrawer(0);
+
 
 
             c.setRemainder(remainder);
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            c.setCreated_at(currentTime);
 
             } catch (NumberFormatException e) {
                 request.setAttribute("_token", request.getSession().getId());

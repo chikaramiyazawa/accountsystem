@@ -1,4 +1,4 @@
-package controllers.reference;
+package controllers.passbookentry;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,16 +16,16 @@ import models.Credit;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class ReferenceIndex
+ * Servlet implementation class PassBookEntryIndex
  */
-@WebServlet("/reference/index")
-public class ReferenceIndex extends HttpServlet {
+@WebServlet("/passbookentry")
+public class PassBookEntryIndex extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ReferenceIndex() {
+    public PassBookEntryIndex() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -38,18 +38,32 @@ public class ReferenceIndex extends HttpServlet {
         EntityManager em = DBUtil.createEntityManager();
 
         Account login_accounts =(Account)request.getSession().getAttribute("login_accounts");
+        int page;
+
+        try{
+            page = Integer.parseInt(request.getParameter("page"));
+        }catch(Exception e){
+            page = 1;
+        }
 
 
-        List<Credit>credits = em.createNamedQuery("getMyAccountCredit" ,Credit.class)
+        List<Credit>credits = em.createNamedQuery("getMyAccountPass" ,Credit.class)
                 .setParameter("numbers" , login_accounts)
-                .setMaxResults(1)
+                .setFirstResult(15 * (page - 1))
+                .setMaxResults(15)
                 .getResultList();
 
-
-
+        long numbers_count = (long)em.createNamedQuery("getMyAccountCount" , Long.class)
+                .setParameter("numbers", login_accounts)
+                .getSingleResult();
         em.close();
 
+
+
+
+
         request.setAttribute("credits", credits);
+        request.setAttribute("numbers_count", numbers_count);
 
 
         if(request.getSession().getAttribute("flush") != null){
@@ -57,7 +71,7 @@ public class ReferenceIndex extends HttpServlet {
             request.getSession().removeAttribute("flush");
         }
 
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/credits/reference_index.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/passbook/passbook_entry.jsp");
 
         rd.forward(request, response);
     }

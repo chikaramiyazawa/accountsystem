@@ -9,7 +9,7 @@
                 <c:out value="${flush}"></c:out>
             </div>
         </c:if>
-        <h2>口座番号残高確認</h2>
+        <h2>残高確認</h2>
 
         <table id="accounts_list">
             <tbody>

@@ -1,6 +1,7 @@
 package controllers.deposit;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -38,7 +39,7 @@ public class DepositServlet extends HttpServlet {
         if(_token != null && _token.equals(request.getSession().getId())){
             EntityManager em = DBUtil.createEntityManager();
 
-            Credit c = em.find(Credit.class, (Integer)(request.getSession().getAttribute("id")));
+            Credit c = new Credit();
 
             c.setNumbers((Account)request.getSession().getAttribute("login_accounts"));
 
@@ -55,9 +56,14 @@ public class DepositServlet extends HttpServlet {
 
             }
             c.setCash(cash);
+            c.setDeposit(cash);
+            c.setDrawer(0);
             int remainder = Integer.parseInt(request.getParameter("remainder"));
             remainder = remainder + cash;
             c.setRemainder(remainder);
+
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            c.setCreated_at(currentTime);
 
             } catch (NumberFormatException e) {
                 request.setAttribute("_token", request.getSession().getId());
@@ -79,6 +85,7 @@ public class DepositServlet extends HttpServlet {
 
 
             em.getTransaction().begin();
+            em.persist(c);
             em.getTransaction().commit();
 
             request.getSession().setAttribute("flush", "更新が完了しました。");

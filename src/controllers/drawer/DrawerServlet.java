@@ -1,6 +1,7 @@
 package controllers.drawer;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -38,7 +39,7 @@ public class DrawerServlet extends HttpServlet {
         if(_token != null && _token.equals(request.getSession().getId())){
             EntityManager em = DBUtil.createEntityManager();
 
-            Credit c = em.find(Credit.class, (Integer)(request.getSession().getAttribute("id")));
+            Credit c = new Credit();
 
             c.setNumbers((Account)request.getSession().getAttribute("login_accounts"));
 
@@ -54,7 +55,9 @@ public class DrawerServlet extends HttpServlet {
                 rd.forward(request,response);
 
             }
+            c.setDeposit(0);
             c.setCash(cash);
+            c.setDrawer(cash);
             int remainder = Integer.parseInt(request.getParameter("remainder"));
             if(remainder < cash){
                 request.setAttribute("_token", request.getSession().getId());
@@ -67,6 +70,8 @@ public class DrawerServlet extends HttpServlet {
             }
             remainder = remainder - cash;
             c.setRemainder(remainder);
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            c.setCreated_at(currentTime);
 
             } catch (NumberFormatException e) {
                 request.setAttribute("_token", request.getSession().getId());
@@ -88,6 +93,7 @@ public class DrawerServlet extends HttpServlet {
 
 
             em.getTransaction().begin();
+            em.persist(c);
             em.getTransaction().commit();
 
             request.getSession().setAttribute("flush", "更新が完了しました。");

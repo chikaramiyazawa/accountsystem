@@ -42,6 +42,7 @@ public class DepositIndexServlet extends HttpServlet {
 
         List<Credit>credits = em.createNamedQuery("getMyAccountCredit" ,Credit.class)
                 .setParameter("numbers" , login_accounts)
+                .setMaxResults(1)
                 .getResultList();
 
 
